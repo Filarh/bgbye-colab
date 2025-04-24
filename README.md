@@ -1,58 +1,51 @@
-# BGBye
+# BGBye Gradio Notebook 🚀
 
-## Installation
+> **Nota del autor:**
+> Esta demo fue ensamblada principalmente con ayuda de **ChatGPT** y **Claude**. Yo aporté la idea y algunos ajustes mínimos, ¡el poder de la comunidad AI in action!
 
-### Prerequisites
+---
 
-- Latest Node.js and npm
-- python3 and python3-pip
-- Windows users must use **Windows Subsystem for Linux (WSL)**
-- Concurrently (optional): for running both server and client at once.
-  `npm i concurrently -g`
+## 🔥 ¿Qué es BGBye?
+BGBye es una interfaz de eliminación de fondo de imágenes y videos basada en múltiples modelos (U2NET, ORMBG, BriaAI, CarveKit, etc.), todo ejecutándose en Google Colab mediante **Gradio**. Sin instalaciones locales ni configuraciones complejas.
 
-### Steps
+## 🚀 Inicia en Colab
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Filarh/bgbye-colab/blob/main/BgBye_Gradio.ipynb)
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/MangoLion/bgbye
-   cd bgbye
-   ```
 
-2. Install dependencies:
-   ```
-   npm install
-   ```
+---
 
-3. Set up the server:
-   ```
-   npm run setup-server
-   ```
-   **Make sure to restart your terminal after!**
+## 📖 Instrucciones de uso
+1. Haz clic en el botón **Open In Colab**.
+2. En la notebook, ejecuta todas las celdas de instalación y configuración (pip, modelos, dependencias).
+3. Una vez levantado el servidor interno de FastAPI y Gradio, aparecerá la interfaz:
+   - **Imagen:** sube tu foto, elige modelo y formato, ¡listo!
+   - **Video:** sube un `.mp4`, selecciona método y descarga tu video con fondo removido.
+4. Experimenta con diferentes métodos para ver cuál funciona mejor según tu contenido.
 
-### AMD GPU
-Goto `./server/setp.sh` and replace the index url with
-`--index-url https://download.pytorch.org/whl/rocm6.0`
 
-Do this **before** calling `npm run setup-server`
+---
 
-### Diagnosis
-- NPM takes forever to install? (WSL)
-  - You probably didn't install npm on WSL, so its using npm on windows. Install npm on WSL first.
-- Internal server error 500 whenever submit an image/video
-  - Could be CUDA issues, make sure your cuda GPU is visible (nvidia-smi)?
-- Internal server error 500 whenever submit a video, but image works
-  - Check if ffmpeg is installed
+## 🔧 Dependencias
+La notebook instala automáticamente:
 
-## Running the App
+- Python 3.10+
+- Gradio
+- FastAPI + Uvicorn
+- Transformers (BriaAI)
+- `transparent_background` (InspyreNet)
+- `rembg` (Rembg)
+- CarveKit (U2NET, BASNet, DeepLabV3, Tracer)
+- ORMBG (si está disponible)
 
-To start both the web app and server, run:
 
-```
-npm start
-```
+---
 
-## Moar notes
+## 🎉 Créditos
+- Idea y ajustes mínimos: **Autor**
+- Generación y ensamblaje de código: **ChatGPT** & **Claude**
+- Modelos y frameworks: Marcas originales de cada proyecto (ver `requirements.txt` / celdas de instalación).
 
-I'm so sorry this is using the long dead create-react-app template! Was setting up Cloudflare Pages for the first time and their tutorial installed CRA 💀
+---
 
-I'll move this stuff to Vite later
+_Disfruta eliminando fondos desde la nube con un solo clic!_
+
