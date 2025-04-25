@@ -9,21 +9,7 @@ class Theme:
         return gr.themes.Soft(
             primary_hue="blue",
             secondary_hue="green",
-            neutral_hue="slate",
-            text_size=gr.themes.sizes.text_lg
-        ).set(
-            button_primary_background_fill="*primary_500",
-            button_primary_background_fill_hover="*primary_600",
-            button_primary_text_color="white",
-            button_secondary_background_fill="*neutral_100",
-            button_secondary_background_fill_hover="*neutral_200",
-            button_secondary_text_color="*neutral_800",
-            block_title_text_weight="600",
-            block_label_text_size="*text_md",
-            block_label_text_weight="600",
-            input_background_fill="*neutral_50",
-            container_radius="*radius_lg",
-            card_radius="*radius_lg"
+            neutral_hue="slate"
         )
     
     @staticmethod
@@ -32,25 +18,7 @@ class Theme:
         return gr.themes.Soft(
             primary_hue="indigo",
             secondary_hue="emerald",
-            neutral_hue="zinc",
-            text_size=gr.themes.sizes.text_lg
-        ).set(
-            button_primary_background_fill="*primary_500",
-            button_primary_background_fill_hover="*primary_600",
-            button_primary_text_color="white",
-            button_secondary_background_fill="*neutral_700",
-            button_secondary_background_fill_hover="*neutral_600",
-            button_secondary_text_color="white",
-            block_title_text_weight="600",
-            block_label_text_size="*text_md",
-            block_label_text_weight="600",
-            input_background_fill="*neutral_800",
-            container_radius="*radius_lg",
-            card_radius="*radius_lg",
-            background_fill_primary="*neutral_900",
-            background_fill_secondary="*neutral_800",
-            text_color="white",
-            border_color_primary="*neutral_700"
+            neutral_hue="zinc"
         )
     
     @staticmethod
@@ -58,57 +26,46 @@ class Theme:
         """Devuelve CSS personalizado para la interfaz"""
         return """
         .gradio-container {
-            font-family: 'Nunito', 'Segoe UI', sans-serif !important;
+            font-family: 'Segoe UI', sans-serif;
         }
         
-        .gr-button-primary {
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        button.primary {
+            background-color: #2563eb !important;
+            color: white !important;
         }
         
-        .gr-button-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        button.primary:hover {
+            background-color: #1d4ed8 !important;
         }
         
-        .gr-button.gr-button-lg {
-            font-weight: 600;
+        h1, h2, h3 {
+            font-weight: bold !important;
         }
         
-        .gr-form {
-            border-radius: 1rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .gr-box {
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        .gr-box, .gr-form, .gr-panel {
+            border-radius: 8px !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24) !important;
         }
         
         .footer {
             text-align: center;
-            margin-top: 2rem;
-            padding: 1rem;
-            font-size: 0.875rem;
-            color: var(--neutral-500);
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #6b7280;
         }
         
-        .tab-nav * {
-            font-weight: 600;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
         
-        .gr-prose h1, .gr-prose h2, .gr-prose h3 {
-            font-weight: 700;
+        table th, table td {
+            padding: 8px;
+            border: 1px solid #e2e8f0;
         }
         
-        .image-preview img {
-            object-fit: contain;
-            max-height: 500px;
+        table th {
+            background-color: #f8fafc;
+            font-weight: bold;
         }
         """ 

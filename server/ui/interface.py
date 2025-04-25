@@ -64,7 +64,7 @@ class GradioInterface:
                 with gr.Tab("🖼️ Imagen Individual"):
                     with gr.Row():
                         with gr.Column(scale=1):
-                            input_image = gr.Image(label="Imagen de Entrada", type="numpy", elem_classes="image-preview")
+                            input_image = gr.Image(label="Imagen de Entrada", type="numpy")
                             with gr.Row():
                                 method = gr.Dropdown(
                                     choices=AVAILABLE_METHODS,
@@ -78,10 +78,10 @@ class GradioInterface:
                                     label="Formato de Salida",
                                     interactive=True
                                 )
-                            process_btn = gr.Button("Eliminar Fondo", variant="primary", size="lg")
+                            process_btn = gr.Button("Eliminar Fondo", variant="primary")
                         
                         with gr.Column(scale=1):
-                            output_image = gr.Image(label="Imagen Procesada", type="numpy", elem_classes="image-preview")
+                            output_image = gr.Image(label="Imagen Procesada", type="numpy")
                             status = gr.Textbox(label="Estado")
                 
                 with gr.Tab("📚 Procesamiento por Lotes"):
@@ -109,83 +109,27 @@ class GradioInterface:
                                         label="Formato de Salida",
                                         interactive=True
                                     )
-                                batch_process_btn = gr.Button("Procesar Lote", variant="primary", size="lg")
+                                batch_process_btn = gr.Button("Procesar Lote", variant="primary")
                         
                         with gr.Column():
                             batch_status = gr.Textbox(label="Estado del Procesamiento por Lotes", lines=5)
             
-            # Sección de información sobre los métodos
             with gr.Accordion("ℹ️ Información de Métodos", open=False):
-                with gr.Row():
-                    for i, method_name in enumerate(AVAILABLE_METHODS[:3]):
-                        if method_name not in METHOD_DESCRIPTIONS:
-                            continue
-                            
-                        with gr.Column():
-                            with gr.Card():
-                                gr.Markdown(f"### {method_name.upper()}")
-                                gr.Markdown(METHOD_DESCRIPTIONS[method_name])
-                                if method_name == "ormbg" and ORMBG_AVAILABLE:
-                                    gr.Markdown("⭐ *Recomendado para mejor calidad*")
-                                if "human" in method_name:
-                                    gr.Markdown("👤 *Especializado en figuras humanas*") 
+                method_info_md = "| Método | Descripción |\n| --- | --- |\n"
                 
-                with gr.Row():
-                    for i, method_name in enumerate(AVAILABLE_METHODS[3:6]):
-                        if method_name not in METHOD_DESCRIPTIONS:
-                            continue
-                            
-                        with gr.Column():
-                            with gr.Card():
-                                gr.Markdown(f"### {method_name.upper()}")
-                                gr.Markdown(METHOD_DESCRIPTIONS[method_name])
-                                if method_name == "ormbg" and ORMBG_AVAILABLE:
-                                    gr.Markdown("⭐ *Recomendado para mejor calidad*")
-                                if "human" in method_name:
-                                    gr.Markdown("👤 *Especializado en figuras humanas*")
+                for method_name in AVAILABLE_METHODS:
+                    if method_name in METHOD_DESCRIPTIONS:
+                        desc = METHOD_DESCRIPTIONS[method_name]
+                        if method_name == "ormbg" and ORMBG_AVAILABLE:
+                            desc += " ⭐ *Recomendado para mejor calidad*"
+                        if "human" in method_name:
+                            desc += " 👤 *Especializado en figuras humanas*"
+                        method_info_md += f"| **{method_name.upper()}** | {desc} |\n"
                 
-                with gr.Row():
-                    for i, method_name in enumerate(AVAILABLE_METHODS[6:]):
-                        if method_name not in METHOD_DESCRIPTIONS:
-                            continue
-                            
-                        with gr.Column():
-                            with gr.Card():
-                                gr.Markdown(f"### {method_name.upper()}")
-                                gr.Markdown(METHOD_DESCRIPTIONS[method_name])
-                                if method_name == "ormbg" and ORMBG_AVAILABLE:
-                                    gr.Markdown("⭐ *Recomendado para mejor calidad*")
-                                if "human" in method_name:
-                                    gr.Markdown("👤 *Especializado en figuras humanas*")
+                gr.Markdown(method_info_md)
             
-            # Configuración del modo oscuro/claro
-            theme_mode = gr.Radio(
-                ["Claro", "Oscuro"], 
-                label="Tema", 
-                value="Claro",
-                interactive=True
-            )
-            
-            def change_theme(mode):
-                if mode == "Oscuro":
-                    return Theme.get_dark_theme()
-                return Theme.get_default_theme()
-            
-            theme_mode.change(
-                fn=change_theme,
-                inputs=[theme_mode],
-                outputs=[],
-                _js="(mode) => {document.body.classList.toggle('dark', mode === 'Oscuro'); return mode}"
-            )
-            
-            # Footer
-            gr.Markdown("""
-            <div class="footer">
-                <p>Desarrollado con ❤️ usando Gradio | BGBye - Eliminación de Fondos</p>
-            </div>
-            """)
+            gr.Markdown("### Desarrollado con ❤️ usando Gradio | BGBye - Eliminación de Fondos")
                         
-            # Configurar manejadores de eventos
             process_btn.click(
                 fn=self.process_image,
                 inputs=[input_image, method, output_format],
