@@ -4,6 +4,7 @@ from PIL import Image
 from transformers import pipeline
 from transparent_background import Remover
 from rembg import remove as rembg_remove, new_session
+import time
 
 # Importar modelos Carvekit
 from carvekit.ml.wrap.u2net import U2NET
@@ -119,7 +120,12 @@ class ModelManager:
     def process_image(self, image, method):
         """Procesa una imagen con el método especificado"""
         try:
-            if method == "bria":
+            if method == "all":
+                # Este método especial procesará con todos los métodos
+                # pero delegará el procesamiento real al método process_all_models
+                # que implementaremos con un callback para actualizar la interfaz
+                raise ValueError("El método 'all' debe ser procesado por process_all_models")
+            elif method == "bria":
                 return self.process_with_bria(image)
             elif method == "ormbg" and ORMBG_AVAILABLE:
                 return self.process_with_ormbg(image)
@@ -135,6 +141,57 @@ class ModelManager:
             # Limpiar caché GPU si se usó
             if torch.cuda.is_available():
                 torch.cuda.empty_cache()
+    
+    def process_all_models(self, image, progress_callback=None):
+        """
+        Procesa una imagen con todos los modelos disponibles
+        
+        Args:
+            image: Imagen PIL a procesar
+            progress_callback: Función de callback para actualizar el progreso.
+                              Recibe (método_actual, imagen_procesada, mensaje)
+        
+        Returns:
+            Dict con pares {método: imagen_procesada}
+        """
+        results = {}
+        methods = [m for m in AVAILABLE_METHODS if m != 'all']
+        
+        for i, method in enumerate(methods):
+            try:
+                start_time = time.time()
+                
+                # Procesar imagen con el método actual
+                if method == "bria":
+                    result = self.process_with_bria(image)
+                elif method == "ormbg" and ORMBG_AVAILABLE:
+                    result = self.process_with_ormbg(image)
+                elif method == "inspyrenet":
+                    result = self.process_with_inspyrenet(image)
+                elif method in self.rembg_models:
+                    result = self.process_with_rembg(image, model=method)
+                elif method in self.carvekit_models:
+                    result = self.process_with_carvekit(image, model=method)
+                else:
+                    continue  # Saltar métodos no soportados
+                
+                process_time = time.time() - start_time
+                results[method] = result
+                
+                # Si hay callback, informar progreso
+                if progress_callback:
+                    message = f"✅ {method}: Procesado en {process_time:.2f} segundos ({i+1}/{len(methods)})"
+                    progress_callback(method, result, message)
+                    
+            except Exception as e:
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+                # Si hay callback, informar error
+                if progress_callback:
+                    message = f"❌ {method}: Error: {str(e)}"
+                    progress_callback(method, None, message)
+        
+        return results
 
 # Lista de métodos disponibles
 AVAILABLE_METHODS = [
@@ -153,6 +210,9 @@ AVAILABLE_METHODS = [
 if ORMBG_AVAILABLE:
     AVAILABLE_METHODS.append("ormbg")
 
+# Agregar modo "all"
+AVAILABLE_METHODS.append("all")
+
 # Descripciones de los métodos
 METHOD_DESCRIPTIONS = {
     "u2net": "Eliminación de fondo de propósito general con U2NET",
@@ -167,4 +227,7 @@ METHOD_DESCRIPTIONS = {
 }
 
 if ORMBG_AVAILABLE:
-    METHOD_DESCRIPTIONS["ormbg"] = "Eliminación con conocimiento de objetos y preservación detallada de bordes" 
+    METHOD_DESCRIPTIONS["ormbg"] = "Eliminación con conocimiento de objetos y preservación detallada de bordes"
+
+# Agregar descripción para el modo "all"
+METHOD_DESCRIPTIONS["all"] = "Procesa la imagen con todos los modelos disponibles a la vez" 
